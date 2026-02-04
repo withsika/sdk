@@ -12,7 +12,7 @@ const MODAL_STYLES = `
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -28,10 +28,10 @@ const MODAL_STYLES = `
 
 .sika-modal {
   background: white;
-  border-radius: 16px;
+  border-radius: 8px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   width: 100%;
-  max-width: 448px;
+  max-width: 420px;
   overflow: hidden;
   transform: scale(0.95) translateY(10px);
   transition: transform 0.2s ease-out;
@@ -43,8 +43,7 @@ const MODAL_STYLES = `
 
 .sika-iframe {
   width: 100%;
-  height: 85vh;
-  max-height: 700px;
+  height: 520px;
   border: none;
   display: block;
   background-color: #f9fafb;
@@ -67,8 +66,7 @@ const MODAL_STYLES = `
   }
 
   .sika-iframe {
-    height: 90vh;
-    max-height: none;
+    height: 85vh;
   }
 }
 `

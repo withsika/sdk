@@ -1,8 +1,8 @@
-# Sika JavaScript SDK
+# Sika SDK
 
 Embed Sika checkout directly on your website with a beautiful modal. No redirects required.
 
-[![npm version](https://img.shields.io/npm/v/@withsika/js.svg)](https://www.npmjs.com/package/@withsika/js)
+[![npm version](https://img.shields.io/npm/v/@withsika/sdk.svg)](https://www.npmjs.com/package/@withsika/sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
@@ -24,13 +24,13 @@ Embed Sika checkout directly on your website with a beautiful modal. No redirect
 ### npm
 
 ```bash
-npm install @withsika/js
+npm install @withsika/sdk
 ```
 
 ### yarn
 
 ```bash
-yarn add @withsika/js
+yarn add @withsika/sdk
 ```
 
 ## Quick Start
@@ -231,7 +231,7 @@ const handleCheckout = async () => {
 ### ES Modules
 
 ```javascript
-import { Sika } from '@withsika/js';
+import { Sika } from '@withsika/sdk';
 
 const sika = new Sika('sika_test_pk_your_public_key');
 
@@ -294,7 +294,7 @@ sika.checkout({
 The SDK includes TypeScript definitions:
 
 ```typescript
-import { Sika, CheckoutOptions, CheckoutSuccessResult, CheckoutErrorResult } from '@withsika/js';
+import { Sika, CheckoutOptions, CheckoutSuccessResult, CheckoutErrorResult } from '@withsika/sdk';
 
 const sika = new Sika('sika_test_pk_xxx');
 

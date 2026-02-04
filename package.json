@@ -1,7 +1,7 @@
 {
-  "name": "@withsika/js",
+  "name": "@withsika/sdk",
   "version": "0.1.0",
-  "description": "Sika Payments JavaScript SDK for embedded checkout",
+  "description": "Sika Payments SDK for embedded checkout",
   "type": "module",
   "main": "./dist/sika.umd.cjs",
   "module": "./dist/sika.js",

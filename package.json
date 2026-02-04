@@ -1,5 +1,5 @@
 {
-  "name": "@sika/js",
+  "name": "@withsika/js",
   "version": "0.1.0",
   "description": "Sika Payments JavaScript SDK for embedded checkout",
   "type": "module",

@@ -13,7 +13,7 @@ Embed Sika checkout directly on your website with a beautiful modal.
 ### npm
 
 ```bash
-npm install @sika/js
+npm install @withsika/js
 ```
 
 ## Quick Start
@@ -77,7 +77,7 @@ const { reference, checkout_url } = await response.json();
 ### Using ES Modules
 
 ```javascript
-import { Sika } from '@sika/js';
+import { Sika } from '@withsika/js';
 
 const sika = new Sika('sika_test_pk_your_public_key');
 
@@ -127,7 +127,7 @@ Programmatically closes the checkout modal.
 The SDK includes TypeScript definitions:
 
 ```typescript
-import { Sika, CheckoutOptions, CheckoutSuccessResult } from '@sika/js';
+import { Sika, CheckoutOptions, CheckoutSuccessResult } from '@withsika/js';
 
 const sika = new Sika('sika_test_pk_xxx');
 

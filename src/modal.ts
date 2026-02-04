@@ -47,6 +47,7 @@ const MODAL_STYLES = `
   max-height: 700px;
   border: none;
   display: block;
+  background-color: #f9fafb;
 }
 
 @media (max-width: 480px) {

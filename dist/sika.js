@@ -1,4 +1,4 @@
-const h = `
+const d = `
 .sika-overlay {
   position: fixed;
   top: 0;
@@ -25,10 +25,9 @@ const h = `
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   width: 100%;
   max-width: 448px;
-  max-height: calc(100vh - 32px);
-  overflow: auto;
+  overflow: hidden;
   transform: scale(0.95) translateY(10px);
-  transition: transform 0.2s ease-out, max-height 0.15s ease-out;
+  transition: transform 0.2s ease-out;
 }
 
 .sika-overlay.sika-visible .sika-modal {
@@ -38,10 +37,9 @@ const h = `
 .sika-iframe {
   width: 100%;
   height: 600px;
-  min-height: 300px;
   border: none;
   display: block;
-  transition: height 0.15s ease-out;
+  transition: height 0.2s ease-out;
 }
 
 @media (max-width: 480px) {
@@ -52,7 +50,6 @@ const h = `
 
   .sika-modal {
     max-width: 100%;
-    max-height: 95vh;
     border-radius: 16px 16px 0 0;
     transform: translateY(100%);
   }
@@ -62,20 +59,18 @@ const h = `
   }
 
   .sika-iframe {
-    height: auto;
-    min-height: 400px;
-    max-height: calc(95vh - 32px);
+    height: 600px;
   }
 }
 `;
 let c = !1;
-function d() {
+function h() {
   if (c) return;
   const t = document.createElement("style");
-  t.id = "sika-modal-styles", t.textContent = h, document.head.appendChild(t), c = !0;
+  t.id = "sika-modal-styles", t.textContent = d, document.head.appendChild(t), c = !0;
 }
 function u() {
-  d();
+  h();
   const t = document.createElement("div");
   return t.className = "sika-overlay", t.setAttribute("role", "dialog"), t.setAttribute("aria-modal", "true"), t.setAttribute("aria-label", "Sika Checkout"), t;
 }
@@ -95,18 +90,17 @@ function f(t) {
 function p(t) {
   return new Promise((e) => {
     t.classList.remove("sika-visible");
-    const i = () => {
-      t.removeEventListener("transitionend", i), t.parentNode && t.parentNode.removeChild(t), document.body.style.overflow = "", e();
+    const s = () => {
+      t.removeEventListener("transitionend", s), t.parentNode && t.parentNode.removeChild(t), document.body.style.overflow = "", e();
     };
-    t.addEventListener("transitionend", i), setTimeout(i, 300);
+    t.addEventListener("transitionend", s), setTimeout(s, 300);
   });
 }
 function v(t, e) {
-  const a = Math.max(e, 300);
-  t.style.height = `${a}px`;
+  t.style.height = `${e}px`;
 }
-const g = "https://pay.withsika.com";
-class y {
+const y = "https://pay.withsika.com";
+class w {
   _publicKey;
   checkoutUrl;
   activeCheckout = null;
@@ -122,12 +116,12 @@ class y {
    * const sika = new Sika('sika_test_pk_xxx');
    * ```
    */
-  constructor(e, i) {
+  constructor(e, s) {
     if (!e)
       throw new Error("Sika: publicKey is required");
     !e.startsWith("sika_test_pk_") && !e.startsWith("sika_live_pk_") && console.warn(
       'Sika: publicKey should start with "sika_test_pk_" or "sika_live_pk_". Make sure you are using a public key, not a secret key.'
-    ), this._publicKey = e, this.checkoutUrl = i?.checkoutUrl || g;
+    ), this._publicKey = e, this.checkoutUrl = s?.checkoutUrl || y;
   }
   /**
    * Opens a checkout modal for the given reference.
@@ -153,17 +147,17 @@ class y {
       throw new Error(
         "Sika: Inline checkout initialization is not yet supported. Please create a checkout on your server and pass the reference."
       );
-    const i = e.reference, a = u(), n = k(), l = `${this.checkoutUrl}/${i}`, r = m(l);
-    n.appendChild(r), a.appendChild(n), a.addEventListener("click", (s) => {
-      s.target === a && this.handleCancel();
+    const s = e.reference, a = u(), r = k(), l = `${this.checkoutUrl}/${s}`, n = m(l);
+    r.appendChild(n), a.appendChild(r), a.addEventListener("click", (i) => {
+      i.target === a && this.handleCancel();
     });
-    const o = (s) => {
-      s.key === "Escape" && this.handleCancel();
+    const o = (i) => {
+      i.key === "Escape" && this.handleCancel();
     };
     document.addEventListener("keydown", o), this.activeCheckout = {
-      reference: i,
+      reference: s,
       options: e,
-      iframe: r,
+      iframe: n,
       overlay: a
     }, this.setupMessageListener(), f(a), a._keydownHandler = o;
   }
@@ -177,8 +171,8 @@ class y {
    */
   close() {
     if (!this.activeCheckout) return;
-    const { overlay: e } = this.activeCheckout, i = e._keydownHandler;
-    i && document.removeEventListener("keydown", i), this.messageHandler && (window.removeEventListener("message", this.messageHandler), this.messageHandler = null), p(e), this.activeCheckout = null;
+    const { overlay: e } = this.activeCheckout, s = e._keydownHandler;
+    s && document.removeEventListener("keydown", s), this.messageHandler && (window.removeEventListener("message", this.messageHandler), this.messageHandler = null), p(e), this.activeCheckout = null;
   }
   /**
    * Sets up the postMessage listener for iframe communication
@@ -187,8 +181,8 @@ class y {
     this.messageHandler && window.removeEventListener("message", this.messageHandler), this.messageHandler = (e) => {
       if (!e.origin.includes(new URL(this.checkoutUrl).hostname))
         return;
-      const i = e.data;
-      !i || typeof i != "object" || !i.type?.startsWith("sika:") || this.handleMessage(i);
+      const s = e.data;
+      !s || typeof s != "object" || !s.type?.startsWith("sika:") || this.handleMessage(s);
     }, window.addEventListener("message", this.messageHandler);
   }
   /**
@@ -196,10 +190,10 @@ class y {
    */
   handleMessage(e) {
     if (!this.activeCheckout) return;
-    const { options: i, iframe: a } = this.activeCheckout;
+    const { options: s, iframe: a } = this.activeCheckout;
     switch (e.type) {
       case "sika:ready":
-        i.onLoad?.();
+        s.onLoad?.();
         break;
       case "sika:resize":
         e.height && v(a, e.height);
@@ -220,23 +214,23 @@ class y {
    */
   handleSuccess(e) {
     if (!this.activeCheckout) return;
-    const { options: i } = this.activeCheckout, a = {
+    const { options: s } = this.activeCheckout, a = {
       reference: e.reference || this.activeCheckout.reference,
       status: "succeeded"
     };
-    i.onSuccess?.(a), this.close();
+    s.onSuccess?.(a), this.close();
   }
   /**
    * Handles payment error
    */
   handleError(e) {
     if (!this.activeCheckout) return;
-    const { options: i } = this.activeCheckout, a = {
+    const { options: s } = this.activeCheckout, a = {
       reference: e.reference || this.activeCheckout.reference,
       status: "failed",
       message: e.message || "Payment failed"
     };
-    i.onError?.(a);
+    s.onError?.(a);
   }
   /**
    * Handles checkout cancellation
@@ -248,6 +242,6 @@ class y {
   }
 }
 export {
-  y as Sika
+  w as Sika
 };
 //# sourceMappingURL=sika.js.map

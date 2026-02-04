@@ -32,10 +32,9 @@ const MODAL_STYLES = `
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   width: 100%;
   max-width: 448px;
-  max-height: calc(100vh - 32px);
-  overflow: auto;
+  overflow: hidden;
   transform: scale(0.95) translateY(10px);
-  transition: transform 0.2s ease-out, max-height 0.15s ease-out;
+  transition: transform 0.2s ease-out;
 }
 
 .sika-overlay.sika-visible .sika-modal {
@@ -45,10 +44,9 @@ const MODAL_STYLES = `
 .sika-iframe {
   width: 100%;
   height: 600px;
-  min-height: 300px;
   border: none;
   display: block;
-  transition: height 0.15s ease-out;
+  transition: height 0.2s ease-out;
 }
 
 @media (max-width: 480px) {
@@ -59,7 +57,6 @@ const MODAL_STYLES = `
 
   .sika-modal {
     max-width: 100%;
-    max-height: 95vh;
     border-radius: 16px 16px 0 0;
     transform: translateY(100%);
   }
@@ -69,9 +66,7 @@ const MODAL_STYLES = `
   }
 
   .sika-iframe {
-    height: auto;
-    min-height: 400px;
-    max-height: calc(95vh - 32px);
+    height: 600px;
   }
 }
 `
@@ -172,8 +167,6 @@ export function hideModal(overlay: HTMLDivElement): Promise<void> {
  * Updates iframe height (for dynamic content)
  */
 export function resizeIframe(iframe: HTMLIFrameElement, height: number): void {
-  // Set minimum height but allow growth beyond viewport (modal will scroll)
-  const minHeight = 300
-  const finalHeight = Math.max(height, minHeight)
-  iframe.style.height = `${finalHeight}px`
+  // Set the iframe height to exactly match the content
+  iframe.style.height = `${height}px`
 }

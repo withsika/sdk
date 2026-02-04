@@ -28,6 +28,7 @@ import {
   createBackdrop,
   createIframe,
   showModal,
+  showIframe,
   hideModal,
   resizeIframe,
 } from './modal'
@@ -216,11 +217,12 @@ export class Sika {
   private handleMessage(message: EmbedMessage): void {
     if (!this.activeCheckout) return
 
-    const { options, iframe } = this.activeCheckout
+    const { options, iframe, backdrop } = this.activeCheckout
 
     switch (message.type) {
       case 'sika:ready':
-        // Checkout is ready
+        // Checkout is ready - show the iframe
+        showIframe(backdrop, iframe)
         options.onLoad?.()
         break
 

@@ -16,10 +16,30 @@ const MODAL_STYLES = `
   z-index: 999998;
   opacity: 0;
   transition: opacity 0.3s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sika-backdrop.sika-visible {
   opacity: 1;
+}
+
+.sika-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: sika-spin 0.8s linear infinite;
+}
+
+@keyframes sika-spin {
+  to { transform: rotate(360deg); }
+}
+
+.sika-backdrop.sika-ready .sika-spinner {
+  display: none;
 }
 
 .sika-iframe {
@@ -31,7 +51,7 @@ const MODAL_STYLES = `
   border: none;
   z-index: 999999;
   opacity: 0;
-  transition: opacity 0.3s ease-out;
+  transition: opacity 0.2s ease-out;
 }
 
 .sika-iframe.sika-visible {
@@ -55,7 +75,7 @@ function injectStyles(): void {
 }
 
 /**
- * Creates the backdrop overlay element
+ * Creates the backdrop overlay element with loading spinner
  */
 export function createBackdrop(): HTMLDivElement {
   injectStyles()
@@ -63,6 +83,11 @@ export function createBackdrop(): HTMLDivElement {
   const backdrop = document.createElement('div')
   backdrop.className = 'sika-backdrop'
   backdrop.setAttribute('data-sika', 'backdrop')
+
+  // Add loading spinner
+  const spinner = document.createElement('div')
+  spinner.className = 'sika-spinner'
+  backdrop.appendChild(spinner)
 
   return backdrop
 }
@@ -88,7 +113,7 @@ export function createIframe(src: string): HTMLIFrameElement {
 }
 
 /**
- * Shows the modal with animation
+ * Shows the modal with animation (iframe stays hidden until ready)
  */
 export function showModal(backdrop: HTMLDivElement, iframe: HTMLIFrameElement): void {
   document.body.appendChild(backdrop)
@@ -96,11 +121,18 @@ export function showModal(backdrop: HTMLDivElement, iframe: HTMLIFrameElement): 
   // Prevent body scroll when modal is open
   document.body.style.overflow = 'hidden'
 
-  // Trigger animation on next frame
+  // Show backdrop with spinner immediately, iframe stays hidden
   requestAnimationFrame(() => {
     backdrop.classList.add('sika-visible')
-    iframe.classList.add('sika-visible')
   })
+}
+
+/**
+ * Shows the iframe (called when checkout is ready)
+ */
+export function showIframe(backdrop: HTMLDivElement, iframe: HTMLIFrameElement): void {
+  backdrop.classList.add('sika-ready')
+  iframe.classList.add('sika-visible')
 }
 
 /**

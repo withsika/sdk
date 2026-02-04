@@ -33,9 +33,9 @@ const MODAL_STYLES = `
   width: 100%;
   max-width: 448px;
   max-height: calc(100vh - 32px);
-  overflow: hidden;
+  overflow: auto;
   transform: scale(0.95) translateY(10px);
-  transition: transform 0.2s ease-out;
+  transition: transform 0.2s ease-out, max-height 0.15s ease-out;
 }
 
 .sika-overlay.sika-visible .sika-modal {
@@ -172,7 +172,8 @@ export function hideModal(overlay: HTMLDivElement): Promise<void> {
  * Updates iframe height (for dynamic content)
  */
 export function resizeIframe(iframe: HTMLIFrameElement, height: number): void {
-  // Clamp height to reasonable bounds
-  const clampedHeight = Math.min(Math.max(height, 300), window.innerHeight - 32)
-  iframe.style.height = `${clampedHeight}px`
+  // Set minimum height but allow growth beyond viewport (modal will scroll)
+  const minHeight = 300
+  const finalHeight = Math.max(height, minHeight)
+  iframe.style.height = `${finalHeight}px`
 }

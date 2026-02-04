@@ -26,9 +26,9 @@ const h = `
   width: 100%;
   max-width: 448px;
   max-height: calc(100vh - 32px);
-  overflow: hidden;
+  overflow: auto;
   transform: scale(0.95) translateY(10px);
-  transition: transform 0.2s ease-out;
+  transition: transform 0.2s ease-out, max-height 0.15s ease-out;
 }
 
 .sika-overlay.sika-visible .sika-modal {
@@ -102,10 +102,10 @@ function p(t) {
   });
 }
 function v(t, e) {
-  const i = Math.min(Math.max(e, 300), window.innerHeight - 32);
-  t.style.height = `${i}px`;
+  const a = Math.max(e, 300);
+  t.style.height = `${a}px`;
 }
-const w = "https://pay.withsika.com";
+const g = "https://pay.withsika.com";
 class y {
   _publicKey;
   checkoutUrl;
@@ -127,7 +127,7 @@ class y {
       throw new Error("Sika: publicKey is required");
     !e.startsWith("sika_test_pk_") && !e.startsWith("sika_live_pk_") && console.warn(
       'Sika: publicKey should start with "sika_test_pk_" or "sika_live_pk_". Make sure you are using a public key, not a secret key.'
-    ), this._publicKey = e, this.checkoutUrl = i?.checkoutUrl || w;
+    ), this._publicKey = e, this.checkoutUrl = i?.checkoutUrl || g;
   }
   /**
    * Opens a checkout modal for the given reference.

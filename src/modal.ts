@@ -10,64 +10,22 @@ const MODAL_STYLES = `
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  height: 100%;
   z-index: 999999;
   opacity: 0;
   transition: opacity 0.2s ease-out;
-  padding: 16px;
 }
 
 .sika-overlay.sika-visible {
   opacity: 1;
 }
 
-.sika-modal {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  width: 100%;
-  max-width: 420px;
-  overflow: hidden;
-  transform: scale(0.95) translateY(10px);
-  transition: transform 0.2s ease-out;
-}
-
-.sika-overlay.sika-visible .sika-modal {
-  transform: scale(1) translateY(0);
-}
-
 .sika-iframe {
   width: 100%;
-  height: 520px;
+  height: 100%;
   border: none;
   display: block;
-  background-color: #f9fafb;
-}
-
-@media (max-width: 480px) {
-  .sika-overlay {
-    padding: 0;
-    align-items: flex-end;
-  }
-
-  .sika-modal {
-    max-width: 100%;
-    border-radius: 16px 16px 0 0;
-    transform: translateY(100%);
-  }
-
-  .sika-overlay.sika-visible .sika-modal {
-    transform: translateY(0);
-  }
-
-  .sika-iframe {
-    height: 85vh;
-  }
 }
 `
 
@@ -87,7 +45,7 @@ function injectStyles(): void {
 }
 
 /**
- * Creates the modal overlay element
+ * Creates the fullscreen overlay element
  */
 export function createOverlay(): HTMLDivElement {
   injectStyles()
@@ -99,15 +57,6 @@ export function createOverlay(): HTMLDivElement {
   overlay.setAttribute('aria-label', 'Sika Checkout')
 
   return overlay
-}
-
-/**
- * Creates the modal container element
- */
-export function createModal(): HTMLDivElement {
-  const modal = document.createElement('div')
-  modal.className = 'sika-modal'
-  return modal
 }
 
 /**

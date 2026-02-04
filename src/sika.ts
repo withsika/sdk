@@ -26,7 +26,6 @@
 
 import {
   createOverlay,
-  createModal,
   createIframe,
   showModal,
   hideModal,
@@ -122,22 +121,13 @@ export class Sika {
 
     const reference = options.reference
 
-    // Create modal elements
+    // Create fullscreen iframe overlay
     const overlay = createOverlay()
-    const modal = createModal()
     const iframeSrc = `${this.checkoutUrl}/${reference}`
     const iframe = createIframe(iframeSrc)
 
-    // Assemble modal
-    modal.appendChild(iframe)
-    overlay.appendChild(modal)
-
-    // Handle click on overlay backdrop to close
-    overlay.addEventListener('click', (event) => {
-      if (event.target === overlay) {
-        this.handleCancel()
-      }
-    })
+    // Assemble - iframe directly in overlay (no modal wrapper needed)
+    overlay.appendChild(iframe)
 
     // Handle escape key to close
     const handleKeydown = (event: KeyboardEvent) => {

@@ -45,8 +45,10 @@ const MODAL_STYLES = `
 .sika-iframe {
   width: 100%;
   height: 600px;
+  min-height: 300px;
   border: none;
   display: block;
+  transition: height 0.15s ease-out;
 }
 
 @media (max-width: 480px) {
@@ -67,7 +69,9 @@ const MODAL_STYLES = `
   }
 
   .sika-iframe {
-    height: calc(95vh - 32px);
+    height: auto;
+    min-height: 400px;
+    max-height: calc(95vh - 32px);
   }
 }
 `

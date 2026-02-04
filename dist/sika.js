@@ -1,4 +1,4 @@
-const d = `
+const h = `
 .sika-overlay {
   position: fixed;
   top: 0;
@@ -38,8 +38,10 @@ const d = `
 .sika-iframe {
   width: 100%;
   height: 600px;
+  min-height: 300px;
   border: none;
   display: block;
+  transition: height 0.15s ease-out;
 }
 
 @media (max-width: 480px) {
@@ -60,18 +62,20 @@ const d = `
   }
 
   .sika-iframe {
-    height: calc(95vh - 32px);
+    height: auto;
+    min-height: 400px;
+    max-height: calc(95vh - 32px);
   }
 }
 `;
 let c = !1;
-function h() {
+function d() {
   if (c) return;
   const t = document.createElement("style");
-  t.id = "sika-modal-styles", t.textContent = d, document.head.appendChild(t), c = !0;
+  t.id = "sika-modal-styles", t.textContent = h, document.head.appendChild(t), c = !0;
 }
 function u() {
-  h();
+  d();
   const t = document.createElement("div");
   return t.className = "sika-overlay", t.setAttribute("role", "dialog"), t.setAttribute("aria-modal", "true"), t.setAttribute("aria-label", "Sika Checkout"), t;
 }
@@ -91,15 +95,15 @@ function f(t) {
 function p(t) {
   return new Promise((e) => {
     t.classList.remove("sika-visible");
-    const a = () => {
-      t.removeEventListener("transitionend", a), t.parentNode && t.parentNode.removeChild(t), document.body.style.overflow = "", e();
+    const i = () => {
+      t.removeEventListener("transitionend", i), t.parentNode && t.parentNode.removeChild(t), document.body.style.overflow = "", e();
     };
-    t.addEventListener("transitionend", a), setTimeout(a, 300);
+    t.addEventListener("transitionend", i), setTimeout(i, 300);
   });
 }
 function v(t, e) {
-  const a = Math.min(Math.max(e, 300), window.innerHeight - 32);
-  t.style.height = `${a}px`;
+  const i = Math.min(Math.max(e, 300), window.innerHeight - 32);
+  t.style.height = `${i}px`;
 }
 const w = "https://pay.withsika.com";
 class y {
@@ -118,12 +122,12 @@ class y {
    * const sika = new Sika('sika_test_pk_xxx');
    * ```
    */
-  constructor(e, a) {
+  constructor(e, i) {
     if (!e)
       throw new Error("Sika: publicKey is required");
     !e.startsWith("sika_test_pk_") && !e.startsWith("sika_live_pk_") && console.warn(
       'Sika: publicKey should start with "sika_test_pk_" or "sika_live_pk_". Make sure you are using a public key, not a secret key.'
-    ), this._publicKey = e, this.checkoutUrl = a?.checkoutUrl || w;
+    ), this._publicKey = e, this.checkoutUrl = i?.checkoutUrl || w;
   }
   /**
    * Opens a checkout modal for the given reference.
@@ -149,19 +153,19 @@ class y {
       throw new Error(
         "Sika: Inline checkout initialization is not yet supported. Please create a checkout on your server and pass the reference."
       );
-    const a = e.reference, i = u(), r = k(), l = `${this.checkoutUrl}/${a}`, n = m(l);
-    r.appendChild(n), i.appendChild(r), i.addEventListener("click", (s) => {
-      s.target === i && this.handleCancel();
+    const i = e.reference, a = u(), n = k(), l = `${this.checkoutUrl}/${i}`, r = m(l);
+    n.appendChild(r), a.appendChild(n), a.addEventListener("click", (s) => {
+      s.target === a && this.handleCancel();
     });
     const o = (s) => {
       s.key === "Escape" && this.handleCancel();
     };
     document.addEventListener("keydown", o), this.activeCheckout = {
-      reference: a,
+      reference: i,
       options: e,
-      iframe: n,
-      overlay: i
-    }, this.setupMessageListener(), f(i), i._keydownHandler = o;
+      iframe: r,
+      overlay: a
+    }, this.setupMessageListener(), f(a), a._keydownHandler = o;
   }
   /**
    * Closes the current checkout modal.
@@ -173,8 +177,8 @@ class y {
    */
   close() {
     if (!this.activeCheckout) return;
-    const { overlay: e } = this.activeCheckout, a = e._keydownHandler;
-    a && document.removeEventListener("keydown", a), this.messageHandler && (window.removeEventListener("message", this.messageHandler), this.messageHandler = null), p(e), this.activeCheckout = null;
+    const { overlay: e } = this.activeCheckout, i = e._keydownHandler;
+    i && document.removeEventListener("keydown", i), this.messageHandler && (window.removeEventListener("message", this.messageHandler), this.messageHandler = null), p(e), this.activeCheckout = null;
   }
   /**
    * Sets up the postMessage listener for iframe communication
@@ -183,8 +187,8 @@ class y {
     this.messageHandler && window.removeEventListener("message", this.messageHandler), this.messageHandler = (e) => {
       if (!e.origin.includes(new URL(this.checkoutUrl).hostname))
         return;
-      const a = e.data;
-      !a || typeof a != "object" || !a.type?.startsWith("sika:") || this.handleMessage(a);
+      const i = e.data;
+      !i || typeof i != "object" || !i.type?.startsWith("sika:") || this.handleMessage(i);
     }, window.addEventListener("message", this.messageHandler);
   }
   /**
@@ -192,13 +196,13 @@ class y {
    */
   handleMessage(e) {
     if (!this.activeCheckout) return;
-    const { options: a, iframe: i } = this.activeCheckout;
+    const { options: i, iframe: a } = this.activeCheckout;
     switch (e.type) {
       case "sika:ready":
-        a.onLoad?.();
+        i.onLoad?.();
         break;
       case "sika:resize":
-        e.height && v(i, e.height);
+        e.height && v(a, e.height);
         break;
       case "sika:success":
         this.handleSuccess(e);
@@ -216,23 +220,23 @@ class y {
    */
   handleSuccess(e) {
     if (!this.activeCheckout) return;
-    const { options: a } = this.activeCheckout, i = {
+    const { options: i } = this.activeCheckout, a = {
       reference: e.reference || this.activeCheckout.reference,
       status: "succeeded"
     };
-    a.onSuccess?.(i), this.close();
+    i.onSuccess?.(a), this.close();
   }
   /**
    * Handles payment error
    */
   handleError(e) {
     if (!this.activeCheckout) return;
-    const { options: a } = this.activeCheckout, i = {
+    const { options: i } = this.activeCheckout, a = {
       reference: e.reference || this.activeCheckout.reference,
       status: "failed",
       message: e.message || "Payment failed"
     };
-    a.onError?.(i);
+    i.onError?.(a);
   }
   /**
    * Handles checkout cancellation

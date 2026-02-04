@@ -26,6 +26,7 @@ const MODAL_STYLES = `
   height: 100%;
   border: none;
   display: block;
+  background: transparent;
 }
 `
 
@@ -68,6 +69,7 @@ export function createIframe(src: string): HTMLIFrameElement {
   iframe.src = src
   iframe.setAttribute('allow', 'payment')
   iframe.setAttribute('title', 'Sika Checkout')
+  iframe.setAttribute('allowtransparency', 'true')
   // Security: prevent iframe from navigating the parent
   iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups')
 

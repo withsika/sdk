@@ -19,13 +19,14 @@ const l = `
   height: 100%;
   border: none;
   display: block;
+  background: transparent;
 }
 `;
-let r = !1;
+let n = !1;
 function h() {
-  if (r) return;
+  if (n) return;
   const t = document.createElement("style");
-  t.id = "sika-modal-styles", t.textContent = l, document.head.appendChild(t), r = !0;
+  t.id = "sika-modal-styles", t.textContent = l, document.head.appendChild(t), n = !0;
 }
 function d() {
   h();
@@ -34,7 +35,7 @@ function d() {
 }
 function u(t) {
   const e = document.createElement("iframe");
-  return e.className = "sika-iframe", e.src = t, e.setAttribute("allow", "payment"), e.setAttribute("title", "Sika Checkout"), e.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups"), e;
+  return e.className = "sika-iframe", e.src = t, e.setAttribute("allow", "payment"), e.setAttribute("title", "Sika Checkout"), e.setAttribute("allowtransparency", "true"), e.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups"), e;
 }
 function k(t) {
   document.body.appendChild(t), document.body.style.overflow = "hidden", requestAnimationFrame(() => {
@@ -53,8 +54,8 @@ function f(t) {
 function m(t, e) {
   t.style.height = `${e}px`;
 }
-const v = "https://pay.withsika.com";
-class p {
+const p = "https://pay.withsika.com";
+class v {
   _publicKey;
   checkoutUrl;
   activeCheckout = null;
@@ -75,7 +76,7 @@ class p {
       throw new Error("Sika: publicKey is required");
     !e.startsWith("sika_test_pk_") && !e.startsWith("sika_live_pk_") && console.warn(
       'Sika: publicKey should start with "sika_test_pk_" or "sika_live_pk_". Make sure you are using a public key, not a secret key.'
-    ), this._publicKey = e, this.checkoutUrl = s?.checkoutUrl || v;
+    ), this._publicKey = e, this.checkoutUrl = s?.checkoutUrl || p;
   }
   /**
    * Opens a checkout modal for the given reference.
@@ -103,15 +104,15 @@ class p {
       );
     const s = e.reference, i = d(), o = `${this.checkoutUrl}/${s}`, a = u(o);
     i.appendChild(a);
-    const n = (c) => {
+    const r = (c) => {
       c.key === "Escape" && this.handleCancel();
     };
-    document.addEventListener("keydown", n), this.activeCheckout = {
+    document.addEventListener("keydown", r), this.activeCheckout = {
       reference: s,
       options: e,
       iframe: a,
       overlay: i
-    }, this.setupMessageListener(), k(i), i._keydownHandler = n;
+    }, this.setupMessageListener(), k(i), i._keydownHandler = r;
   }
   /**
    * Closes the current checkout modal.
@@ -194,6 +195,6 @@ class p {
   }
 }
 export {
-  p as Sika
+  v as Sika
 };
 //# sourceMappingURL=sika.js.map

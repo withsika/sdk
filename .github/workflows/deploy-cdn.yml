@@ -1,0 +1,49 @@
+name: Deploy to CDN
+
+on:
+  release:
+    types: [published]
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Create CDN structure
+        run: |
+          mkdir -p cdn/v1
+          # Copy UMD build as the main file for browsers
+          cp dist/sika.umd.cjs cdn/v1/sika.js
+          cp dist/sika.umd.cjs.map cdn/v1/sika.js.map
+          # Also copy ES module version
+          cp dist/sika.js cdn/v1/sika.esm.js
+          cp dist/sika.js.map cdn/v1/sika.esm.js.map
+          # Copy TypeScript definitions
+          cp dist/sika.d.ts cdn/v1/sika.d.ts
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: sika-js-sdk
+          directory: cdn
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}

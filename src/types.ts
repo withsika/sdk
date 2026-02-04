@@ -112,5 +112,5 @@ export interface CheckoutState {
   reference: string
   options: CheckoutOptions
   iframe: HTMLIFrameElement
-  overlay: HTMLDivElement
+  backdrop: HTMLDivElement
 }

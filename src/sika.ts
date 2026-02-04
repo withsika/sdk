@@ -25,7 +25,7 @@
  */
 
 import {
-  createOverlay,
+  createBackdrop,
   createIframe,
   showModal,
   hideModal,
@@ -121,13 +121,10 @@ export class Sika {
 
     const reference = options.reference
 
-    // Create fullscreen iframe overlay
-    const overlay = createOverlay()
+    // Create backdrop and iframe separately (like Paystack)
+    const backdrop = createBackdrop()
     const iframeSrc = `${this.checkoutUrl}/${reference}`
     const iframe = createIframe(iframeSrc)
-
-    // Assemble - iframe directly in overlay (no modal wrapper needed)
-    overlay.appendChild(iframe)
 
     // Handle escape key to close
     const handleKeydown = (event: KeyboardEvent) => {
@@ -142,17 +139,17 @@ export class Sika {
       reference,
       options,
       iframe,
-      overlay,
+      backdrop,
     }
 
     // Set up message listener
     this.setupMessageListener()
 
-    // Show the modal
-    showModal(overlay)
+    // Show the modal (backdrop + iframe)
+    showModal(backdrop, iframe)
 
     // Store keydown handler for cleanup
-    ;(overlay as HTMLDivElement & { _keydownHandler?: (e: KeyboardEvent) => void })._keydownHandler = handleKeydown
+    ;(backdrop as HTMLDivElement & { _keydownHandler?: (e: KeyboardEvent) => void })._keydownHandler = handleKeydown
   }
 
   /**
@@ -166,10 +163,10 @@ export class Sika {
   close(): void {
     if (!this.activeCheckout) return
 
-    const { overlay } = this.activeCheckout
+    const { backdrop, iframe } = this.activeCheckout
 
     // Remove keydown listener
-    const keydownHandler = (overlay as HTMLDivElement & { _keydownHandler?: (e: KeyboardEvent) => void })._keydownHandler
+    const keydownHandler = (backdrop as HTMLDivElement & { _keydownHandler?: (e: KeyboardEvent) => void })._keydownHandler
     if (keydownHandler) {
       document.removeEventListener('keydown', keydownHandler)
     }
@@ -181,7 +178,7 @@ export class Sika {
     }
 
     // Hide modal
-    hideModal(overlay)
+    hideModal(backdrop, iframe)
 
     // Clear active checkout
     this.activeCheckout = null

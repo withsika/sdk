@@ -1,54 +1,64 @@
-const l = `
-.sika-overlay {
+const d = `
+.sika-backdrop {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 999999;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 999998;
   opacity: 0;
-  transition: opacity 0.2s ease-out;
+  transition: opacity 0.3s ease-out;
 }
 
-.sika-overlay.sika-visible {
+.sika-backdrop.sika-visible {
   opacity: 1;
 }
 
 .sika-iframe {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border: none;
-  display: block;
-  background: transparent;
+  z-index: 999999;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.sika-iframe.sika-visible {
+  opacity: 1;
 }
 `;
-let n = !1;
-function h() {
-  if (n) return;
+let r = !1;
+function o() {
+  if (r) return;
   const t = document.createElement("style");
-  t.id = "sika-modal-styles", t.textContent = l, document.head.appendChild(t), n = !0;
+  t.id = "sika-modal-styles", t.textContent = d, document.head.appendChild(t), r = !0;
 }
-function d() {
-  h();
+function h() {
+  o();
   const t = document.createElement("div");
-  return t.className = "sika-overlay", t.setAttribute("role", "dialog"), t.setAttribute("aria-modal", "true"), t.setAttribute("aria-label", "Sika Checkout"), t;
+  return t.className = "sika-backdrop", t.setAttribute("data-sika", "backdrop"), t;
 }
 function u(t) {
+  o();
   const e = document.createElement("iframe");
-  return e.className = "sika-iframe", e.src = t, e.setAttribute("allow", "payment"), e.setAttribute("title", "Sika Checkout"), e.setAttribute("allowtransparency", "true"), e.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups"), e;
+  return e.className = "sika-iframe", e.src = t, e.setAttribute("allow", "payment"), e.setAttribute("title", "Sika Checkout"), e.setAttribute("role", "dialog"), e.setAttribute("aria-modal", "true"), e.setAttribute("aria-label", "Sika Checkout"), e.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups"), e;
 }
-function k(t) {
-  document.body.appendChild(t), document.body.style.overflow = "hidden", requestAnimationFrame(() => {
-    t.classList.add("sika-visible");
+function k(t, e) {
+  document.body.appendChild(t), document.body.appendChild(e), document.body.style.overflow = "hidden", requestAnimationFrame(() => {
+    t.classList.add("sika-visible"), e.classList.add("sika-visible");
   });
 }
-function f(t) {
-  return new Promise((e) => {
-    t.classList.remove("sika-visible");
-    const s = () => {
-      t.removeEventListener("transitionend", s), t.parentNode && t.parentNode.removeChild(t), document.body.style.overflow = "", e();
+function f(t, e) {
+  return new Promise((s) => {
+    t.classList.remove("sika-visible"), e.classList.remove("sika-visible");
+    const i = () => {
+      e.removeEventListener("transitionend", i), t.parentNode && t.parentNode.removeChild(t), e.parentNode && e.parentNode.removeChild(e), document.body.style.overflow = "", s();
     };
-    t.addEventListener("transitionend", s), setTimeout(s, 300);
+    e.addEventListener("transitionend", i), setTimeout(i, 400);
   });
 }
 function m(t, e) {
@@ -102,17 +112,15 @@ class v {
       throw new Error(
         "Sika: Inline checkout initialization is not yet supported. Please create a checkout on your server and pass the reference."
       );
-    const s = e.reference, i = d(), o = `${this.checkoutUrl}/${s}`, a = u(o);
-    i.appendChild(a);
-    const r = (c) => {
-      c.key === "Escape" && this.handleCancel();
+    const s = e.reference, i = h(), c = `${this.checkoutUrl}/${s}`, a = u(c), n = (l) => {
+      l.key === "Escape" && this.handleCancel();
     };
-    document.addEventListener("keydown", r), this.activeCheckout = {
+    document.addEventListener("keydown", n), this.activeCheckout = {
       reference: s,
       options: e,
       iframe: a,
-      overlay: i
-    }, this.setupMessageListener(), k(i), i._keydownHandler = r;
+      backdrop: i
+    }, this.setupMessageListener(), k(i, a), i._keydownHandler = n;
   }
   /**
    * Closes the current checkout modal.
@@ -124,8 +132,8 @@ class v {
    */
   close() {
     if (!this.activeCheckout) return;
-    const { overlay: e } = this.activeCheckout, s = e._keydownHandler;
-    s && document.removeEventListener("keydown", s), this.messageHandler && (window.removeEventListener("message", this.messageHandler), this.messageHandler = null), f(e), this.activeCheckout = null;
+    const { backdrop: e, iframe: s } = this.activeCheckout, i = e._keydownHandler;
+    i && document.removeEventListener("keydown", i), this.messageHandler && (window.removeEventListener("message", this.messageHandler), this.messageHandler = null), f(e, s), this.activeCheckout = null;
   }
   /**
    * Sets up the postMessage listener for iframe communication
